@@ -279,6 +279,7 @@ public abstract class ProcessTree implements Iterable<OSProcess>, IProcessTree, 
 
             SortedMap<String,String> envs = getEnvironmentVariables();
             for (Entry<String,String> e : modelEnvVar.entrySet()) {
+		LOGGER.log(Level.INFO, "Checking variable {0} for value {1}", new Object[] {e.getKey(), e.getValue()});
                 String v = envs.get(e.getKey());
                 if(v==null || !v.equals(e.getValue()))
                     return false;   // no match
@@ -475,14 +476,14 @@ public abstract class ProcessTree implements Iterable<OSProcess>, IProcessTree, 
                 if(p.getPid()<10)
                     continue;   // ignore system processes like "idle process"
 
-                LOGGER.finest("Considering to kill "+p.getPid());
-
+                LOGGER.info("Considering to kill "+p.getPid());
+		
                 boolean matched;
                 try {
                     matched = p.hasMatchingEnvVars(modelEnvVars);
                 } catch (WinpException e) {
                     // likely a missing privilege
-                    LOGGER.log(FINEST,"  Failed to check environment variable match",e);
+                    LOGGER.log(Level.INFO,"  Failed to check environment variable match",e);
                     continue;
                 }
 
